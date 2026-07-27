@@ -78,13 +78,9 @@ mission1/
 ```bash
 $ pwd
 ```
- 
- ```bash
-#출력 결과 :
-/Users/balsamncedar56301/Desktop/cdy-suz/mission1
-```
-* 이미지
-![pwd 화면캡쳐](./images/pwd_capture.png) 
+
+* 출력결과
+![pwd 현재 위치(작업폴더)](./images/pwd_capture.png)
   
 
 #### 2. 파일 목록 
@@ -92,18 +88,9 @@ $ pwd
 ```bash
 $ ls -al
 ```
-```bash
-total 8
-drwxr-xr-x  6 balsamncedar56301  balsamncedar56301  192 Jul 27 19:37 .
-drwxr-xr-x  3 balsamncedar56301  balsamncedar56301 96 Jul 27 19:22 ..
--rw-r--r--  1 balsamncedar56301  balsamncedar56301  476 Jul 27 19:32 README.md
-drwxr-xr-x  3 balsamncedar56301  balsamncedar56301 96 Jul 27 19:52 logs
-drwxr-xr-x  5 balsamncedar56301  balsamncedar56301  160 Jul 27 19:42 practice
-drwxr-xr-x  2 balsamncedar56301  balsamncedar56301 64 Jul 27 19:34 site
-```
   
-* 이미지 
-![list all 화면캡쳐](./images/list.png)
+* 출력결과 
+![list all 화면캡쳐](./images/listall.png)
   
 
 ####  3. 파일 생성 및 복사,  결과 확인 
@@ -115,11 +102,7 @@ $ cp practice/memo.txt practice/memo_backup.txt
 $ cat memo_backup.txt
 ```
   
-``` bash
-#출력 결과 :
-Hello Terminal
-```
-* 이미지
+* 출력결과
 ![touch copy read file](./images/mkcpcat.png)
 
 
@@ -134,7 +117,7 @@ $ ls -al
 ```
   
   
-* 이미지
+* 출력결과
 ![move file and rename](./images/mvrename.png)  
 
   
@@ -145,7 +128,7 @@ $ rm  site/moved_memo.txt
 $ ls -al
 ```
   
-* 이미지
+* 출력결과
 ![remove file](./images/removefile.png)
 
 
@@ -158,7 +141,7 @@ $ echo "This is sample text"  >> sample.txt
 $ cat sample.txt
 ```
   
-* 이미지
+* 출력결과
 ![make file and read file](./images/makefileAndRead.png)
   
 
@@ -175,7 +158,7 @@ $ cat secret.txt
 
 ```
 
-* 이미지
+* 출력결과
 ![chmod](./images/chmod.png)
 
 
