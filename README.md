@@ -50,30 +50,41 @@ mission1/
 
 - [x] 터미널 기본 명령어 숙달 (`ls`, `cd`, `mkdir`, `rm` 등)
 
-- [x] 리다이렉션 및 파이프라인 활용
+- [x] 권한 실습 (chmod) 및 파일 보안 확인
 
-- [x] Docker 설치 및 컨테이너 실행
+- [x] Docker 설치 및 데몬 동작 확인
+
+- [x] Docker 기본 명령 (images, ps, logs, stats)
+
+- [ ] Ubuntu 컨테이너 진입 및 attach/exec 차이 이해
 
 - [ ] Dockerfile 작성 및 이미지 빌드
+
+- [ ] 포트 포워딩 및 브라우저 접속 확인
+
+- [ ] Docker 볼륨을 이용한 데이터 영속성 검증
 
 - [ ] Git 로컬 저장소 생성 및 GitHub 원격 연결
 
   
 
-## 5. 검증 방법 및 결과
-
-| 항목 | 검증 방법 | 결과 링크 |
-
+## 5. 검증 방법 및 결과 요약
+| 항목 | 검증 방법 | 결과 위치 |
 | :--- | :--- | :--- |
+| 터미널 실습 | 명령어 수행 및 파일 이동 확인 | [5.1 터미널 로그](#51-터미널-조작-로그) |
+| 권한 실습 | `chmod 000` 후 접근 거부 확인 | [5.2 권한 실습](#52-권한-실습) |
+| Docker 기본 | `version`, `info` 확인 | [6.1 Docker 점검](#61-docker-설치-및-기본-점검) |
+| 컨테이너 실습 | `hello-world`, `ubuntu` 실행 | [6.2 컨테이너 실습](#62-컨테이너-실행-실습) |
+| 커스텀 이미지 | Dockerfile 빌드 및 접속 | (작성 예정) |
+| 볼륨 영속성 | 컨테이너 삭제 후 데이터 확인 | (작성 예정) |
+| Git 설정 | `git config --list` 확인 | (작성 예정) |
 
-| 터미널 실습 | `ls -al` 명령어로 구조 확인 | [로그 확인](./logs/terminal_practice.log) |
 
-| Docker 실행 | `docker ps` 결과 확인 | [스크린샷](./images/docker_result.png) |
-
-  
 -------
 
- ###  터미널 명령어
+## 5. 터미널 및 권한 실습 상세
+
+### 5.1 터미널 조작 로그
 #### 1. 현재 위치
 ```bash
 $ pwd
@@ -145,7 +156,7 @@ $ cat sample.txt
 ![make file and read file](./images/makefileAndRead.png)
   
 
-#### 7. 권한 실습(확인 및 변경)
+### 5.2 권한 실습
 
 ```bash
 $ touch  secret.txt
@@ -162,19 +173,40 @@ $ cat secret.txt
 ![chmod](./images/chmod.png)
 
 
- 
-## 6. 트러블슈팅 (Troubleshooting)
+---
 
-  
+## 6. Docker 운영 실습
 
-### Case 1:
+### 6.1 Docker 설치 및 기본 점검
+- **버전 확인**: `docker --version`
+- **데몬 상태**: `docker info` (또는 OrbStack 대시보드 확인)
 
-- **문제** :
+### 6.2 컨테이너 실행 실습
+1. **hello-world**: `docker run hello-world` 성공 기록
+2. **Ubuntu 진입**:
+   ```bash
+   docker run -it --name my-ubuntu ubuntu bash
+   # 내부에서 ls, echo 수행
+   ```
+3. **관찰 결과 (attach vs exec)**:
+   - `attach`: 메인 프로세스에 연결되어 `exit` 시 컨테이너 종료됨.
+   - `exec`: 새로운 세션을 열어 `exit` 해도 컨테이너가 유지됨.
 
-- **원인 가설**:
+---
 
-0 **해결**:
+## 7. 커스텀 이미지 제작 (진행 예정)
+*(이후 진행될 Dockerfile 빌드 내용을 여기에 작성)*
 
-  
+## 8. Docker 볼륨 및 데이터 영속성 (진행 예정)
+*(이후 진행될 볼륨 실습 내용을 여기에 작성)*
 
-### Case 2
+## 9. Git 및 GitHub 연동 (진행 예정)
+*(이후 진행될 Git 설정 내용을 여기에 작성)*
+
+## 10. 트러블슈팅 (Troubleshooting)
+### Case 1: (예시) 권한 문제
+- **문제**: `sudo` 없이 docker 명령어가 안 먹히는 현상
+- **원인**: 사용자 그룹 설정 미비
+- **해결**: OrbStack 설정 확인 또는 유저 그룹 추가
+
+---
