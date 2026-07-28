@@ -202,8 +202,9 @@ $ cat secret.txt
 3. **관찰 결과 (attach vs exec)**:
    - `attach`: 메인 프로세스에 연결되어 `exit` 시 컨테이너 종료됨.
    ![docker attach](./images/dockerAttach.png)
+   
    - `exec`: 새로운 세션을 열어 `exit` 해도 컨테이너가 유지됨.
-
+    ![docker exec](./images/execTestNginX.png)
 ---
 
 ## 7. 커스텀 이미지 제작 (진행 예정)
