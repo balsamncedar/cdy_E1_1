@@ -180,6 +180,17 @@ $ cat secret.txt
 ### 6.1 Docker 설치 및 기본 점검
 - **버전 확인**: `docker --version`
 - **데몬 상태**: `docker info` (또는 OrbStack 대시보드 확인)
+- **이미지 다운 목록 확인 ** : `docker images` 
+   ![docker images](./images/dockerImages.png)
+- **로그 확인 ** :  `docker logs`
+    ![docker logs](./images/dockerLogs.png)
+    ![docker logs](./images/monitoringLogsInRealtime.png)
+
+- **리소스 확인 ** : `docker stats`
+    ```bash
+    docker stats test-nginx
+    ```
+    ![docker stats](./images/dockerStats.png)
 
 ### 6.2 컨테이너 실행 실습
 1. **hello-world**: `docker run hello-world` 성공 기록
@@ -190,6 +201,7 @@ $ cat secret.txt
    ```
 3. **관찰 결과 (attach vs exec)**:
    - `attach`: 메인 프로세스에 연결되어 `exit` 시 컨테이너 종료됨.
+   ![docker attach](./images/dockerAttach.png)
    - `exec`: 새로운 세션을 열어 `exit` 해도 컨테이너가 유지됨.
 
 ---
