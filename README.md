@@ -1,7 +1,5 @@
 # 개발 워크스테이션 구축 프로젝트
 
-  
-
 이 프로젝트는 터미널, Docker, Git을 활용하여 재현 가능한 개발 환경을 구축하는 과정을 기록합니다.
 
   
@@ -30,12 +28,9 @@ mission1/
 
 ├── .gitignore # Git 제외 목록
 
-├── Dockerfile # 환경 재현을 위한 도커 설정
-
-
 ├── images/  # 결과 증빙 스크린샷 (.png, .jpg)
 
-├── practice/  # 터미널 실습용 디렉토리
+├── practice/  # 터미널 실습용 디렉토리 및 도커파일
 
 └── site/  # 결과물 저장소
 
@@ -75,7 +70,7 @@ mission1/
 | Docker 기본 | `version`, `info` 확인 | [6.1 Docker 점검](#61-docker-설치-및-기본-점검) |
 | 컨테이너 실습 | `hello-world`, `ubuntu` 실행 | [6.2 컨테이너 실습](#62-컨테이너-실행-실습) |
 | 커스텀 이미지 | Dockerfile 빌드 및 접속 | [7. 커스텀 이미지 제작](#7-커스텀-이미지-제작) |
-| 볼륨 영속성 | 컨테이너 삭제 후 데이터 확인 | [8. Docker 볼륨 및 데이터 영속성](#8-Docker-볼륨-및-데이터 영속성)  |
+| 볼륨 영속성 | 컨테이너 삭제 후 데이터 확인 | [8. Docker 볼륨 및 데이터 영속성](#8-Docker-볼륨-및-데이터-영속성)  |
 | Git 설정 | `git config --list` 확인 | [9. Git 및 GitHub 연동 ](#9-Git-및-GitHub-연동) |
 
 
@@ -157,6 +152,7 @@ $ cat sample.txt
 
 ### 5.2 권한 실습
 
+- (참고) 권한 실습을 위해 평문으로 작성하였으나 실제 운영환경에서는 보안처리 후 작성.
 ```bash
 $ touch  secret.txt
 $ echo "my-password-1234" >> secret.txt
@@ -228,8 +224,8 @@ $ cat secret.txt
     LABEL maintainer="balsamncedar56301@c5r8s4"
     LABEL description="기본 Nginx 페이지를 커스텀 페이지로 교체"
 
-    # 4. 패키지 설치 (내부 도구 추가)
-    RUN apk update && apk add curl
+    # 4. 패키지 설치 및 캐시 삭제를 통한 이미지 용량 최적화
+    RUN apk update && apk add --no-cache curl
 
     # 5. 정적 컨텐츠 교체  
     # WORKDIR을 설정했으므로, 목적지 경로를 짧게 사용가능
@@ -256,7 +252,7 @@ $ cat secret.txt
     ```bash
     docker run -d -p 8888:80 --name custom_web my-custom-nginx:v1
 
-    docker run -d -p 8080:80 --name original-web nginx:alptine
+    docker run -d -p 8080:80 --name original-web nginx:alpine
     ```
 * 출력결과
 ![커스텀이미지_my_custom_nginx:v1](./cdy_E1_1/images/custom_web_img.png)
@@ -266,7 +262,7 @@ $ cat secret.txt
     ```bash
     docker inspect my-custom-nginx:v1 
 
-    docker inspect my-custom-nginx:v1 --formt='{{json .Config.Env}}' | python3 -m json.tool 
+    docker inspect my-custom-nginx:v1 --format='{{json .Config.Env}}' | python3 -m json.tool 
     inspect my-custom-nginx:v1 --format='{{json .Config.Labels}}' | python3 -m json.tool
 
     ```
@@ -314,8 +310,23 @@ $ cat secret.txt
     pwd
     cat host_data.txt
     ```
+
+
 - **출력결과** 
 ![호스트 컴퓨터 내 특정폴더 컨테이너에 연결](./images/bind-mount-host-to-container.png)
+
+- 추가 권장사항 
+- 바인드 마운트 명령어 작성시 실행시점에 경로가 헷갈리지 않도록 명시적인 환경변수 사용을 권장
+
+    ```bash
+    # 변경전 
+    $ docker run -it --name bind-test -v $(pwd):/data alpine sh
+
+    # 변경후 (모든 터미널 세션에서 공통으로 자주사용한다면 .zshrc에 넣기)
+    $ HOST_PATH=$(pwd)
+    $ docker run -it --name bind-test -v "$HOST_PATH:/data" alpine sh
+
+    ```
 
 ### 8.2. 기본 컨테이너 
     ```bash
@@ -355,7 +366,7 @@ $ cat secret.txt
 ### 9.1. git global 등록
     ```bash
     # 현재 등록된 내용확인
-    git global --list
+    git config --global --list
     
     # 등록
     git config --global user.name "balsamncedar" 
@@ -381,9 +392,8 @@ $ cat secret.txt
 ## 10. 트러블슈팅 (Troubleshooting)
 ### Case 1: 스크린샷 관리 자동화
 - **문제**:  `README.md` 작성과정에서 스크린샷 첨부를 해야하는데 매번 스크린샷 저장후 이름 바꾸어 수동 이동시키는 것에 불편을 느낌
-- **원인**: 특정 경로의 최신 스크린샷 파일을 현재 프로젝트의 `/images` 폴더로 옮기고 이름을 변경해주는 간단한 쉘 스크립트(또는 Alias) `mvcap`을 작성하여 활용함.
+- **원인**: 특정 경로의 최신 스크린샷 파일을 현재 프로젝트의 `/images` 폴더로 옮기고 이름을 변경해주는 간단한 쉘 스크립트(또는 Alias)를 AI와 함께 `mvcap`을 작성하여 활용함.
 - **해결**: 문서화 작업 시간을 단축하고 파일 관리의 일관성을 유지함.
-
 
 ```bash
 vi ~/.zshrc
@@ -395,5 +405,13 @@ cat ~/.zshrc
 
 - **스크립트 내용** 
 ![글로벌 유저 등록](./images/mvcap-script.png)
+
+
+### Case 2: 마크다운 내부 링크 작동 불가
+- **문제**: README 목차와 요약 표에서 내부 링크(`[텍스트](#앵커)`)를 클릭했을 때 해당 섹션으로 이동하지 않거나 에디터에서 문법 오류(색상 이상)가 발생함.
+- **원인**: GitHub 마크다운의 앵커 규칙(공백은 하이픈`-`으로 대체, 대문자는 소문자로 변환)을 준수하지 않았고, 링크 주소 내에 공백이 포함되어 있었음.
+- **해결**: 링크 주소 내의 하이픈으로 대체하여 해결함.
+
+
 
 ---
