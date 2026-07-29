@@ -350,7 +350,6 @@ $ cat secret.txt
 ![같은 볼륨을 다른 컨테이너에 연결시킨후 띄운 모습](./images/check-the-durability-of-volume.png)
 
 ## 9. Git 및 GitHub 연동 (진행 예정)
-*(이후 진행될 Git 설정 내용을 여기에 작성)*
 - git global 등록
     ```bash
     # 현재 등록된 내용확인
@@ -364,7 +363,18 @@ $ cat secret.txt
 - **출력결과** (사전 준비 - 아까 띄운 컨테이너 삭제)
 ![글로벌 유저 등록](./images/git-global.png)
 
-- 
+- SSH 키 생성
+- 방법 :  키생성 -> 키 읽어서 복사 -> 깃헙에 등록 (authentic Key) -> 터미널에서 확인 
+    ```bash
+    # ssh-keygen : ssh-key 생성 / -t 암호 보안 타입 (ed25519 권장 안정성/간결/속도) / -C 코멘트 
+    # ssh-keygen -t   
+    ssh-keygen -t ed25519 -C "balsamncedar5@gmaiil.com"
+
+    # 깃헙 등록후 터미널 확인
+    ssh -T git@github.com
+    ```
+
+![SSH 키 생성 및 등록](./images/gen-SSH.png)
 
 ## 10. 트러블슈팅 (Troubleshooting)
 ### Case 1: (예시) 권한 문제
