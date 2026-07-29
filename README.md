@@ -178,7 +178,7 @@ $ cat secret.txt
 - **데몬 상태**: `docker info` (또는 OrbStack 대시보드 확인)
 - **이미지 다운 목록 확인** : `docker images` 
    ![docker images](./images/dockerImages.png)
-- **로그 확인 ** :  `docker logs`
+- **로그 확인** :  `docker logs`
     ![docker logs](./images/dockerLogs.png)
     ![docker logs](./images/monitoringLogsInRealtime.png)
 
@@ -255,8 +255,8 @@ $ cat secret.txt
     docker run -d -p 8080:80 --name original-web nginx:alpine
     ```
 * 출력결과
-![커스텀이미지_my_custom_nginx:v1](./cdy_E1_1/images/custom_web_img.png)
-![기본이미지_nginx:alpine](./cdy_E1_1/images/original_web_8080.png)
+![커스텀이미지_my_custom_nginx:v1](./images/custom_web_img.png)
+![기본이미지_nginx:alpine](./images/original_web_8080.png)
 
     - 이미지의 메타 데이터를 확인하고 싶을때
     ```bash
@@ -268,8 +268,8 @@ $ cat secret.txt
     ```
 
 * 출력 결과
-![docker inspect 전체](./cdy_E1_1/images/docker-insepct.png)
-![docker inspect 부분](./cdy_E1_1/images/docker-inspect-Labels.png)
+![docker inspect 전체](./images/docker-insepct.png)
+![docker inspect 부분](./images/docker-inspect-Labels.png)
 
     - curl 로 확인하기 
     ```bash
@@ -282,7 +282,7 @@ $ cat secret.txt
     
     ```
 * 출력 결과
-![curl 응답으로 확인하기](./cdy_E1_1/images/curl_originalWeb.png)    
+![curl 응답으로 확인하기](./images/curl_originalWeb.png)    
 
 ## 8. Docker 볼륨 및 데이터 영속성 
 - 바인드 마운트: "내 컴퓨터의 특정 폴더를 직접 연결 (내가 관리)"
@@ -364,6 +364,8 @@ $ cat secret.txt
 
 ## 9. Git 및 GitHub 연동 
 ### 9.1. git global 등록
+
+
     ```bash
     # 현재 등록된 내용확인
     git config --global --list
