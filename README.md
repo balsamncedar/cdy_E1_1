@@ -180,13 +180,13 @@ $ cat secret.txt
 ### 6.1 Docker 설치 및 기본 점검
 - **버전 확인**: `docker --version`
 - **데몬 상태**: `docker info` (또는 OrbStack 대시보드 확인)
-- **이미지 다운 목록 확인 ** : `docker images` 
+- **이미지 다운 목록 확인** : `docker images` 
    ![docker images](./images/dockerImages.png)
 - **로그 확인 ** :  `docker logs`
     ![docker logs](./images/dockerLogs.png)
     ![docker logs](./images/monitoringLogsInRealtime.png)
 
-- **리소스 확인 ** : `docker stats`
+- **리소스 확인** : `docker stats`
     ```bash
     docker stats test-nginx
     ```
@@ -210,6 +210,7 @@ $ cat secret.txt
 ## 7. 커스텀 이미지 제작 (진행 예정)
     - 작업 순서 : docker 파일 작성 -> 빌드 -> 띄운 위치로 웹에서 확인 
     - 비교 방향 : 커스텀 이미지와 기본 이미지 비교
+
     ```bash
     # 1. 베이스 이미지 선택 - 경량 모델 이미지 
     FROM nginx:alpine
@@ -242,6 +243,8 @@ $ cat secret.txt
     # (참고) NginX는 기본적으로 80 포트사용
     EXPOSE 80
     ```
+
+
     ```bash
         # 만든 도커이미지 빌드
         docker build -t my_custom_nginix:v1 .
@@ -284,13 +287,84 @@ $ cat secret.txt
 ![curl 응답으로 확인하기](../cdy_E1_1/images/curl_originalWeb.png)    
 
 ## 8. Docker 볼륨 및 데이터 영속성 (진행 예정)
-*(이후 진행될 볼륨 실습 내용을 여기에 작성)*
+- 바인드 마운트: "내 컴퓨터의 특정 폴더를 직접 연결 (내가 관리)"
+- 볼륨: "도커가 관리하는 전용 저장소를 연결 (도커가 관리)"
+
+- 바인드 마운트 (호스트의 파일을 컨테이너에 연결하여 사용할수 있도록 하는데 사용한다)
+- 비교 방식 : 바인드 마운트를 실행한 컨테이너와 아닌 컨테이너 비교
+- 호스트의 CDY_E1_1/practice/docer-test 안의 파일 host_data.txt 안의 내용 Hello from Host이 컨테이너 안에 있는지 확인
+
+- 1. 바인드 마운트 된 컨테이너
+    ```bash
+    mkdir docker-test
+    echo "Hello from Host" > host_data.txt
+    cat docker-test
+    rm host_data.txt
+    clear
+    ls
+    cd docker-test
+    ls
+    echo "Hello from Host" > host_data.txt
+    cat ./host_data.txt
+    docker run -it --name bind-test -v $(pwd):data alpine sh
+    docker run -it --name bind-test -v $(pwd):/data alpine sh
+    ls
+    pwd
+    cat host_data.txt
+    ```
+- **출력결과** 
+![호스트 컴퓨터 내 특정폴더 컨테이너에 연결](./images/bind-mount-host-to-container.png)
+
+- 2. 기본 컨테이너 
+    ```bash
+    docker run -it --name no-v-test alpine sh  
+    / # cd /data
+    ```
+- **출력결과** 
+![바인드안한 기본 컨테이너](./images/no-v-test.png)
 
 
+- 3. 볼륨
+- 볼륨 생성
+    ```bash
+    # 볼륨생성
+    # docker volume create [생성할 볼륨 이름]
+    # 확인 : docker volume ls
 
+    docker volume create my-test-vol
+    docker volume ls
+    ```
+- **출력결과** 
+![볼륨 생성 및 확인 ](./images/create-volume.png)   
+
+- 컨테이너에 볼륨 연결
+- 생성된 볼륨을 연결한 컨테이너 실행 후 테스트 메모 작성 
+- **출력결과** 
+![생성된 볼륨 컨테이너에 연결](./images/connect-volume-to-container.png)
+
+- 영속성 테스트 
+- **출력결과** (사전 준비 - 아까 띄운 컨테이너 삭제)
+![아까 띄운 컨테이너 삭제](./images/durability-test-pre.png)
+- 같은 볼륨을 다른 컨테이너에 연결시켜서 띄웠을때 
+- **출력결과** 
+![같은 볼륨을 다른 컨테이너에 연결시킨후 띄운 모습](./images/check-the-durability-of-volume.png)
 
 ## 9. Git 및 GitHub 연동 (진행 예정)
 *(이후 진행될 Git 설정 내용을 여기에 작성)*
+- git global 등록
+    ```bash
+    # 현재 등록된 내용확인
+    git global --list
+    
+    # 등록
+    git config --global user.name "balsamncedar" 
+    git config --global user.email "balsamncedar5@gmail.com"
+    git global --list
+    ```
+- **출력결과** (사전 준비 - 아까 띄운 컨테이너 삭제)
+![글로벌 유저 등록](./images/git-global.png)
+
+- 
 
 ## 10. 트러블슈팅 (Troubleshooting)
 ### Case 1: (예시) 권한 문제
