@@ -32,7 +32,6 @@ mission1/
 
 ├── Dockerfile # 환경 재현을 위한 도커 설정
 
-├── logs/  # 수행 과정 로그 모음 (.log)
 
 ├── images/  # 결과 증빙 스크린샷 (.png, .jpg)
 
@@ -56,15 +55,15 @@ mission1/
 
 - [x] Docker 기본 명령 (images, ps, logs, stats)
 
-- [ ] Ubuntu 컨테이너 진입 및 attach/exec 차이 이해
+- [x] Ubuntu 컨테이너 진입 및 attach/exec 차이 이해
 
-- [ ] Dockerfile 작성 및 이미지 빌드
+- [x] Dockerfile 작성 및 이미지 빌드
 
-- [ ] 포트 포워딩 및 브라우저 접속 확인
+- [x] 포트 포워딩 및 브라우저 접속 확인
 
-- [ ] Docker 볼륨을 이용한 데이터 영속성 검증
+- [x] Docker 볼륨을 이용한 데이터 영속성 검증
 
-- [ ] Git 로컬 저장소 생성 및 GitHub 원격 연결
+- [x] Git 로컬 저장소 생성 및 GitHub 원격 연결
 
   
 
@@ -75,9 +74,9 @@ mission1/
 | 권한 실습 | `chmod 000` 후 접근 거부 확인 | [5.2 권한 실습](#52-권한-실습) |
 | Docker 기본 | `version`, `info` 확인 | [6.1 Docker 점검](#61-docker-설치-및-기본-점검) |
 | 컨테이너 실습 | `hello-world`, `ubuntu` 실행 | [6.2 컨테이너 실습](#62-컨테이너-실행-실습) |
-| 커스텀 이미지 | Dockerfile 빌드 및 접속 | (작성 예정) |
-| 볼륨 영속성 | 컨테이너 삭제 후 데이터 확인 | (작성 예정) |
-| Git 설정 | `git config --list` 확인 | (작성 예정) |
+| 커스텀 이미지 | Dockerfile 빌드 및 접속 | [7. 커스텀 이미지 제작](#7-커스텀-이미지-제작) |
+| 볼륨 영속성 | 컨테이너 삭제 후 데이터 확인 | [8. Docker 볼륨 및 데이터 영속성](#8-Docker-볼륨-및-데이터 영속성)  |
+| Git 설정 | `git config --list` 확인 | [9. Git 및 GitHub 연동 ](#9-Git-및-GitHub-연동) |
 
 
 -------
@@ -170,6 +169,7 @@ $ cat secret.txt
 ```
 
 * 출력결과
+- chmod 000 적용 시 소유자라도 권한이 없으면 Permission denied 발생 확인 
 ![chmod](./images/chmod.png)
 
 
@@ -207,9 +207,10 @@ $ cat secret.txt
     ![docker exec](./images/execTestNginX.png)
 ---
 
-## 7. 커스텀 이미지 제작 (진행 예정)
+## 7. 커스텀 이미지 제작
     - 작업 순서 : docker 파일 작성 -> 빌드 -> 띄운 위치로 웹에서 확인 
     - 비교 방향 : 커스텀 이미지와 기본 이미지 비교
+
 
     ```bash
     # 1. 베이스 이미지 선택 - 경량 모델 이미지 
@@ -245,6 +246,7 @@ $ cat secret.txt
     ```
 
 
+
     ```bash
         # 만든 도커이미지 빌드
         docker build -t my_custom_nginix:v1 .
@@ -257,8 +259,8 @@ $ cat secret.txt
     docker run -d -p 8080:80 --name original-web nginx:alptine
     ```
 * 출력결과
-![커스텀이미지_my_custom_nginx:v1](../cdy_E1_1/images/custom_web_img.png)
-![기본이미지_nginx:alpine](../cdy_E1_1/images/original_web_8080.png)
+![커스텀이미지_my_custom_nginx:v1](./cdy_E1_1/images/custom_web_img.png)
+![기본이미지_nginx:alpine](./cdy_E1_1/images/original_web_8080.png)
 
     - 이미지의 메타 데이터를 확인하고 싶을때
     ```bash
@@ -270,8 +272,8 @@ $ cat secret.txt
     ```
 
 * 출력 결과
-![docker inspect 전체](../cdy_E1_1/images/docker-insepct.png)
-![docker inspect 부분](../cdy_E1_1/images/docker-inspect-Labels.png)
+![docker inspect 전체](./cdy_E1_1/images/docker-insepct.png)
+![docker inspect 부분](./cdy_E1_1/images/docker-inspect-Labels.png)
 
     - curl 로 확인하기 
     ```bash
@@ -284,9 +286,9 @@ $ cat secret.txt
     
     ```
 * 출력 결과
-![curl 응답으로 확인하기](../cdy_E1_1/images/curl_originalWeb.png)    
+![curl 응답으로 확인하기](./cdy_E1_1/images/curl_originalWeb.png)    
 
-## 8. Docker 볼륨 및 데이터 영속성 (진행 예정)
+## 8. Docker 볼륨 및 데이터 영속성 
 - 바인드 마운트: "내 컴퓨터의 특정 폴더를 직접 연결 (내가 관리)"
 - 볼륨: "도커가 관리하는 전용 저장소를 연결 (도커가 관리)"
 
@@ -294,7 +296,7 @@ $ cat secret.txt
 - 비교 방식 : 바인드 마운트를 실행한 컨테이너와 아닌 컨테이너 비교
 - 호스트의 CDY_E1_1/practice/docer-test 안의 파일 host_data.txt 안의 내용 Hello from Host이 컨테이너 안에 있는지 확인
 
-- 1. 바인드 마운트 된 컨테이너
+### 8.1. 바인드 마운트 된 컨테이너
     ```bash
     mkdir docker-test
     echo "Hello from Host" > host_data.txt
@@ -315,7 +317,7 @@ $ cat secret.txt
 - **출력결과** 
 ![호스트 컴퓨터 내 특정폴더 컨테이너에 연결](./images/bind-mount-host-to-container.png)
 
-- 2. 기본 컨테이너 
+### 8.2. 기본 컨테이너 
     ```bash
     docker run -it --name no-v-test alpine sh  
     / # cd /data
@@ -324,7 +326,7 @@ $ cat secret.txt
 ![바인드안한 기본 컨테이너](./images/no-v-test.png)
 
 
-- 3. 볼륨
+### 8.3 볼륨
 - 볼륨 생성
     ```bash
     # 볼륨생성
@@ -349,8 +351,8 @@ $ cat secret.txt
 - **출력결과** 
 ![같은 볼륨을 다른 컨테이너에 연결시킨후 띄운 모습](./images/check-the-durability-of-volume.png)
 
-## 9. Git 및 GitHub 연동 (진행 예정)
-- git global 등록
+## 9. Git 및 GitHub 연동 
+### 9.1. git global 등록
     ```bash
     # 현재 등록된 내용확인
     git global --list
@@ -360,10 +362,10 @@ $ cat secret.txt
     git config --global user.email "balsamncedar5@gmail.com"
     git global --list
     ```
-- **출력결과** (사전 준비 - 아까 띄운 컨테이너 삭제)
+- **출력결과** 
 ![글로벌 유저 등록](./images/git-global.png)
 
-- SSH 키 생성
+### 9.2. SSH 키 생성
 - 방법 :  키생성 -> 키 읽어서 복사 -> 깃헙에 등록 (authentic Key) -> 터미널에서 확인 
     ```bash
     # ssh-keygen : ssh-key 생성 / -t 암호 보안 타입 (ed25519 권장 안정성/간결/속도) / -C 코멘트 
@@ -377,9 +379,21 @@ $ cat secret.txt
 ![SSH 키 생성 및 등록](./images/gen-SSH.png)
 
 ## 10. 트러블슈팅 (Troubleshooting)
-### Case 1: (예시) 권한 문제
-- **문제**: `sudo` 없이 docker 명령어가 안 먹히는 현상
-- **원인**: 사용자 그룹 설정 미비
-- **해결**: OrbStack 설정 확인 또는 유저 그룹 추가
+### Case 1: 스크린샷 관리 자동화
+- **문제**:  `README.md` 작성과정에서 스크린샷 첨부를 해야하는데 매번 스크린샷 저장후 이름 바꾸어 수동 이동시키는 것에 불편을 느낌
+- **원인**: 특정 경로의 최신 스크린샷 파일을 현재 프로젝트의 `/images` 폴더로 옮기고 이름을 변경해주는 간단한 쉘 스크립트(또는 Alias) `mvcap`을 작성하여 활용함.
+- **해결**: 문서화 작업 시간을 단축하고 파일 관리의 일관성을 유지함.
+
+
+```bash
+vi ~/.zshrc
+#  내용 수정
+source ~/.zshrc
+
+cat ~/.zshrc
+```
+
+- **스크립트 내용** 
+![글로벌 유저 등록](./images/mvcap-script.png)
 
 ---
