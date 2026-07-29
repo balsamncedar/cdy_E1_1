@@ -208,10 +208,86 @@ $ cat secret.txt
 ---
 
 ## 7. 커스텀 이미지 제작 (진행 예정)
-*(이후 진행될 Dockerfile 빌드 내용을 여기에 작성)*
+    - 작업 순서 : docker 파일 작성 -> 빌드 -> 띄운 위치로 웹에서 확인 
+    - 비교 방향 : 커스텀 이미지와 기본 이미지 비교
+    ```bash
+    # 1. 베이스 이미지 선택 - 경량 모델 이미지 
+    FROM nginx:alpine
+
+
+    # 2. 작업 디렉토리 설정 
+    # 이후의 COPY나 RUN은 모두 이 폴더 기준으로 동작  
+    WORKDIR /usr/share/nginx/html
+
+    # 3. 환경 변수 및 라벨
+    ENV APP_OWNER="BalsamNCedar"
+    ENV APP_STATUS="Learning"
+
+    LABEL maintainer="balsamncedar56301@c5r8s4"
+    LABEL description="기본 Nginx 페이지를 커스텀 페이지로 교체"
+
+    # 4. 패키지 설치 (내부 도구 추가)
+    RUN apk update && apk add curl
+
+    # 5. 정적 컨텐츠 교체  
+    # WORKDIR을 설정했으므로, 목적지 경로를 짧게 사용가능
+    COPY index.html ./index.html
+
+
+    # 6. C : 헬스체크 추가 - 컨테이너 상태 감시
+    # cur -f (fail)
+    HEALTHCHECK --interval=30s --timeout=3s \ 
+        CMD curl -f http://localhost/ || exit 1
+
+    # (참고) NginX는 기본적으로 80 포트사용
+    EXPOSE 80
+    ```
+    ```bash
+        # 만든 도커이미지 빌드
+        docker build -t my_custom_nginix:v1 .
+    ```
+
+    - 컨테이너에  (커스텀이미지 - 8888에 매핑 ) vs  (기본 이미지 - 8080 에 매핑)
+    ```bash
+    docker run -d -p 8888:80 --name custom_web my-custom-nginx:v1
+
+    docker run -d -p 8080:80 --name original-web nginx:alptine
+    ```
+* 출력결과
+![커스텀이미지_my_custom_nginx:v1](../cdy_E1_1/images/custom_web_img.png)
+![기본이미지_nginx:alpine](../cdy_E1_1/images/original_web_8080.png)
+
+    - 이미지의 메타 데이터를 확인하고 싶을때
+    ```bash
+    docker inspect my-custom-nginx:v1 
+
+    docker inspect my-custom-nginx:v1 --formt='{{json .Config.Env}}' | python3 -m json.tool 
+    inspect my-custom-nginx:v1 --format='{{json .Config.Labels}}' | python3 -m json.tool
+
+    ```
+
+* 출력 결과
+![docker inspect 전체](../cdy_E1_1/images/docker-insepct.png)
+![docker inspect 부분](../cdy_E1_1/images/docker-inspect-Labels.png)
+
+    - curl 로 확인하기 
+    ```bash
+    # docker 주소
+    # 출력 결과 html 
+    curl localhost:8080
+
+    # 돌아가고 있는지 HTTP 응답값 줌 
+    curl -I localhost:8080 
+    
+    ```
+* 출력 결과
+![curl 응답으로 확인하기](../cdy_E1_1/images/curl_originalWeb.png)    
 
 ## 8. Docker 볼륨 및 데이터 영속성 (진행 예정)
 *(이후 진행될 볼륨 실습 내용을 여기에 작성)*
+
+
+
 
 ## 9. Git 및 GitHub 연동 (진행 예정)
 *(이후 진행될 Git 설정 내용을 여기에 작성)*
