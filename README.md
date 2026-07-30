@@ -438,7 +438,7 @@ git config --global --list
 # 등록
 git config --global user.name "balsamncedar" 
 git config --global user.email "balsamncedar5@gmail.com"
-git global --list
+git config --list
 ```
 
 
