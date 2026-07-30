@@ -6,7 +6,7 @@
 
 ## 1. 실행 환경
 
-- **OS**: macOS 15.7.4
+- **OS**: Darwin c5r8s4.codyssey.kr 24.6.0 Darwin Kernel Version 24.6.0: Mon Jan 19 22:00:10 PST 2026; root:xnu-11417.140.69.708.3~1/RELEASE_X86_64 x86_64
 
 - **Shell**: /bin/zsh
 
@@ -14,7 +14,20 @@
 
 - **Git**: git version 2.53.0
 
-  
+
+
+```bash
+    # OS  확인 / macOS 의 엔진이름이 다윈이며  
+    # cf) 커널은 하드웨어와 소프트웨어 사이를 이어 연결해주는 관리자 역할을 수행한다. (역할 : 자원관리,CPU 스케줄링, 하드웨어 제어)
+    $ uname -a 
+    $ echo $SHELL
+    $ docker --version
+    $ git --version
+
+```
+
+**출력결과**:
+![실행환경](./images/exec_env.png)
 
 ## 2. 프로젝트 구조
 
@@ -178,7 +191,7 @@ $ cat secret.txt
 - **데몬 상태**: `docker info` (또는 OrbStack 대시보드 확인)
 - **이미지 다운 목록 확인** : `docker images` 
    ![docker images](./images/dockerImages.png)
-- **로그 확인** :  `docker logs`
+- **로그 확인**:  `docker logs`
     ![docker logs](./images/dockerLogs.png)
     ![docker logs](./images/monitoringLogsInRealtime.png)
 
@@ -208,52 +221,54 @@ $ cat secret.txt
     - 비교 방향 : 커스텀 이미지와 기본 이미지 비교
 
 
-    ```bash
-    # 1. 베이스 이미지 선택 - 경량 모델 이미지 
-    FROM nginx:alpine
+```bash
+# 1. 베이스 이미지 선택 - 경량 모델 이미지 
+FROM nginx:alpine
 
 
-    # 2. 작업 디렉토리 설정 
-    # 이후의 COPY나 RUN은 모두 이 폴더 기준으로 동작  
-    WORKDIR /usr/share/nginx/html
+# 2. 작업 디렉토리 설정 
+# 이후의 COPY나 RUN은 모두 이 폴더 기준으로 동작  
+WORKDIR /usr/share/nginx/html
 
-    # 3. 환경 변수 및 라벨
-    ENV APP_OWNER="BalsamNCedar"
-    ENV APP_STATUS="Learning"
+# 3. 환경 변수 및 라벨
+ENV APP_OWNER="BalsamNCedar"
+ENV APP_STATUS="Learning"
 
-    LABEL maintainer="balsamncedar56301@c5r8s4"
-    LABEL description="기본 Nginx 페이지를 커스텀 페이지로 교체"
+LABEL maintainer="balsamncedar56301@c5r8s4"
+LABEL description="기본 Nginx 페이지를 커스텀 페이지로 교체"
 
-    # 4. 패키지 설치 및 캐시 삭제를 통한 이미지 용량 최적화
-    RUN apk update && apk add --no-cache curl
+# 4. 패키지 설치 및 캐시 삭제를 통한 이미지 용량 최적화
+RUN apk update && apk add --no-cache curl
 
-    # 5. 정적 컨텐츠 교체  
-    # WORKDIR을 설정했으므로, 목적지 경로를 짧게 사용가능
-    COPY index.html ./index.html
-
-
-    # 6. C : 헬스체크 추가 - 컨테이너 상태 감시
-    # cur -f (fail)
-    HEALTHCHECK --interval=30s --timeout=3s \ 
-        CMD curl -f http://localhost/ || exit 1
-
-    # (참고) NginX는 기본적으로 80 포트사용
-    EXPOSE 80
-    ```
+# 5. 정적 컨텐츠 교체  
+# WORKDIR을 설정했으므로, 목적지 경로를 짧게 사용가능
+COPY index.html ./index.html
 
 
+# 6. C : 헬스체크 추가 - 컨테이너 상태 감시
+# cur -f (fail)
+HEALTHCHECK --interval=30s --timeout=3s \ 
+    CMD curl -f http://localhost/ || exit 1
 
-    ```bash
-        # 만든 도커이미지 빌드
-        docker build -t my_custom_nginix:v1 .
-    ```
+# (참고) NginX는 기본적으로 80 포트사용
+EXPOSE 80
+```
 
-    - 컨테이너에  (커스텀이미지 - 8888에 매핑 ) vs  (기본 이미지 - 8080 에 매핑)
-    ```bash
-    docker run -d -p 8888:80 --name custom_web my-custom-nginx:v1
 
-    docker run -d -p 8080:80 --name original-web nginx:alpine
-    ```
+
+```bash
+# 만든 도커이미지 빌드
+docker build -t my_custom_nginix:v1 .
+```
+
+- 컨테이너에  (커스텀이미지 - 8888에 매핑 ) vs  (기본 이미지 - 8080 에 매핑)
+```bash
+docker run -d -p 8888:80 --name custom_web my-custom-nginx:v1
+
+docker run -d -p 8080:80 --name original-web nginx:alpine
+```
+
+
 * 출력결과
 ![커스텀이미지_my_custom_nginx:v1](./images/custom_web_img.png)
 ![기본이미지_nginx:alpine](./images/original_web_8080.png)
@@ -329,6 +344,7 @@ $ cat secret.txt
     ```
 
 ### 8.2. 기본 컨테이너 
+
     ```bash
     docker run -it --name no-v-test alpine sh  
     / # cd /data
@@ -380,6 +396,7 @@ $ cat secret.txt
 
 ### 9.2. SSH 키 생성
 - 방법 :  키생성 -> 키 읽어서 복사 -> 깃헙에 등록 (authentic Key) -> 터미널에서 확인 
+
     ```bash
     # ssh-keygen : ssh-key 생성 / -t 암호 보안 타입 (ed25519 권장 안정성/간결/속도) / -C 코멘트 
     # ssh-keygen -t   
