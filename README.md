@@ -353,23 +353,25 @@ docker run -d -p 8080:80 --name original-web nginx:alpine
 - 호스트의 CDY_E1_1/practice/docer-test 안의 파일 host_data.txt 안의 내용 Hello from Host이 컨테이너 안에 있는지 확인
 
 ### 8.1. 바인드 마운트 된 컨테이너
-    ```bash
-    mkdir docker-test
-    echo "Hello from Host" > host_data.txt
-    cat docker-test
-    rm host_data.txt
-    clear
-    ls
-    cd docker-test
-    ls
-    echo "Hello from Host" > host_data.txt
-    cat ./host_data.txt
-    docker run -it --name bind-test -v $(pwd):data alpine sh
-    docker run -it --name bind-test -v $(pwd):/data alpine sh
-    ls
-    pwd
-    cat host_data.txt
-    ```
+
+
+```bash
+mkdir docker-test
+echo "Hello from Host" > host_data.txt
+cat docker-test
+rm host_data.txt
+clear
+ls
+cd docker-test
+ls
+echo "Hello from Host" > host_data.txt
+cat ./host_data.txt
+docker run -it --name bind-test -v $(pwd):data alpine sh
+docker run -it --name bind-test -v $(pwd):/data alpine sh
+ls
+pwd
+cat host_data.txt
+```
 
 
 - **출력결과** 
@@ -390,10 +392,12 @@ docker run -d -p 8080:80 --name original-web nginx:alpine
 
 ### 8.2. 기본 컨테이너 
 
-    ```bash
-    docker run -it --name no-v-test alpine sh  
-    / # cd /data
-    ```
+
+```bash
+docker run -it --name no-v-test alpine sh  
+/ # cd /data
+
+```
 - **출력결과** 
 ![바인드안한 기본 컨테이너](./images/no-v-test.png)
 
@@ -427,15 +431,17 @@ docker run -d -p 8080:80 --name original-web nginx:alpine
 ### 9.1. git global 등록
 
 
-    ```bash
-    # 현재 등록된 내용확인
-    git config --global --list
-    
-    # 등록
-    git config --global user.name "balsamncedar" 
-    git config --global user.email "balsamncedar5@gmail.com"
-    git global --list
-    ```
+```bash
+# 현재 등록된 내용확인
+git config --global --list
+
+# 등록
+git config --global user.name "balsamncedar" 
+git config --global user.email "balsamncedar5@gmail.com"
+git global --list
+```
+
+
 - **출력결과** 
 ![글로벌 유저 등록](./images/git-global.png)
 
