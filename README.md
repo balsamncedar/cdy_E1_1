@@ -6,7 +6,7 @@
 
 ## 1. 실행 환경
 
-- **OS**: Darwin c5r8s4.codyssey.kr 24.6.0 Darwin Kernel Version 24.6.0: Mon Jan 19 22:00:10 PST 2026; root:xnu-11417.140.69.708.3~1/RELEASE_X86_64 x86_64
+- **OS**: Darwin hostname.local 24.6.0 x86_64 (macOS)
 
 - **Shell**: /bin/zsh
 
@@ -27,7 +27,7 @@
 ```
 
 **출력결과**:
-![실행환경](./images/exec_env.png)
+![실행환경](./images/up-exec-env.png)
 
 ## 2. 프로젝트 구조
 
@@ -320,10 +320,10 @@ docker run -d -p 8080:80 --name original-web nginx:alpine
 
     - 이미지의 메타 데이터를 확인하고 싶을때
     ```bash
-    docker inspect my-custom-nginx:v1 
+    $ docker inspect my-custom-nginx:v1 
 
-    docker inspect my-custom-nginx:v1 --format='{{json .Config.Env}}' | python3 -m json.tool 
-    inspect my-custom-nginx:v1 --format='{{json .Config.Labels}}' | python3 -m json.tool
+    $ docker inspect my-custom-nginx:v1 --format='{{json .Config.Env}}' | python3 -m json.tool 
+     inspect my-custom-nginx:v1 --format='{{json .Config.Labels}}' | python3 -m json.tool
 
     ```
 
@@ -356,21 +356,21 @@ docker run -d -p 8080:80 --name original-web nginx:alpine
 
 
 ```bash
-mkdir docker-test
-echo "Hello from Host" > host_data.txt
-cat docker-test
-rm host_data.txt
-clear
-ls
-cd docker-test
-ls
-echo "Hello from Host" > host_data.txt
-cat ./host_data.txt
-docker run -it --name bind-test -v $(pwd):data alpine sh
-docker run -it --name bind-test -v $(pwd):/data alpine sh
-ls
-pwd
-cat host_data.txt
+$ mkdir docker-test
+$ echo "Hello from Host" > host_data.txt
+$ cat docker-test
+$ rm host_data.txt
+$ clear
+$ ls
+$ cd docker-test
+$ ls
+$ echo "Hello from Host" > host_data.txt
+$ cat ./host_data.txt
+$ docker run -it --name bind-test -v $(pwd):data alpine sh
+$ docker run -it --name bind-test -v $(pwd):/data alpine sh
+$ ls
+$ pwd
+$ cat host_data.txt
 ```
 
 
@@ -409,8 +409,8 @@ docker run -it --name no-v-test alpine sh
     # docker volume create [생성할 볼륨 이름]
     # 확인 : docker volume ls
 
-    docker volume create my-test-vol
-    docker volume ls
+    $ docker volume create my-test-vol
+    $ docker volume ls
     ```
 - **출력결과** 
 ![볼륨 생성 및 확인 ](./images/create-volume.png)   
@@ -433,17 +433,17 @@ docker run -it --name no-v-test alpine sh
 
 ```bash
 # 현재 등록된 내용확인
-git config --global --list
+$ git config --global --list
 
 # 등록
-git config --global user.name "balsamncedar" 
-git config --global user.email "balsamncedar5@gmail.com"
-git config --list
+$ git config --global user.name "your_name" 
+$ git config --global user.email "your_email@example.com"
+$ git config --list
 ```
 
 
 - **출력결과** 
-![글로벌 유저 등록](./images/git-global.png)
+![글로벌 유저 등록](./images/up-git-global.png)
 
 ### 9.2. SSH 키 생성
 - 방법 :  키생성 -> 키 읽어서 복사 -> 깃헙에 등록 (authentic Key) -> 터미널에서 확인 
@@ -451,10 +451,10 @@ git config --list
     ```bash
     # ssh-keygen : ssh-key 생성 / -t 암호 보안 타입 (ed25519 권장 안정성/간결/속도) / -C 코멘트 
     # ssh-keygen -t   
-    ssh-keygen -t ed25519 -C "balsamncedar5@gmaiil.com"
+    $ ssh-keygen -t ed25519 -C "your_email@example.com"
 
     # 깃헙 등록후 터미널 확인
-    ssh -T git@github.com
+    $ ssh -T git@github.com
     ```
 
 ![SSH 키 생성 및 등록](./images/gen-SSH.png)
@@ -466,11 +466,11 @@ git config --list
 - **해결**: 문서화 작업 시간을 단축하고 파일 관리의 일관성을 유지함.
 
 ```bash
-vi ~/.zshrc
+$ vi ~/.zshrc
 #  내용 수정
-source ~/.zshrc
+$ source ~/.zshrc
 
-cat ~/.zshrc
+$ cat ~/.zshrc
 ```
 
 - **스크립트 내용** 
