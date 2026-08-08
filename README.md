@@ -434,7 +434,8 @@ docker run -it --name no-v-test alpine sh
 단일 컨테이너 빌드를 넘어, 'Docker Compose'를 활용하여 여러 컨테이너(Nginx, Redis, Redis-GUI)를 하나의 인프라로 정의하고 관리하는 IaC(Infrastructure as Code) 실습을 진행.
  
 > [!NOTE]
-> - 진행방식 : (이미지 생성 혹은 받아오기 완료 상태 가정) yaml 파일 작성 => docker-compose up -d 로 띄운후  => docker ps 로 확인 => curl -I 확인, 브라우저로 확인 =>  exec로 들어가서 ping테스트
+> - 진행방식 : (이미지 생성 혹은 받아오기 완료 상태 가정) yaml 파일 작성 → docker-compose up -d 로 띄운후 
+> → docker ps 로 확인 → curl -I 확인, 브라우저로 확인 →  exec로 들어가서 ping테스트
 
 - yaml 파일 작성
 
@@ -580,5 +581,5 @@ $ cat ~/.zshrc
 ![좀비 컨테이너 삭제후 다시 up명령어 실행](./images/remove-orphans.png)
 
 ![8081 작동 확인](./images/localhost-8081.png)
-![8082 작동 확인](./images/localhost-8082.png)
+![8082 작동 확인](./images/local-host-8082.png)
 ---
