@@ -1,2 +1,7 @@
 # OS 관련 Desktop Service Stroe (macOS 시스템이 폴더 열때 자동으로 만드는 숨김파일 )
 .DS_Store
+
+
+.gitignore
+
+.env
