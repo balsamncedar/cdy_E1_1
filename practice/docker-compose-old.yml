@@ -10,7 +10,7 @@ services:
   cache:
     image: redis:alpine
     container_name : compose_cache 
-    command : redis-server --requirepass "${MY_REDIS_PW}"    # 레디스 실행시 비밀번호(supersecret) 걸고 실행 하도록 명령
+    command : redis-server --requirepass "${MY_REDIS_PW}"    # 레디스 실행시 비밀번호(pwd) 걸고 실행 하도록 명령
 
   redis-gui:
     image: rediscommander/redis-commander:latest
@@ -19,3 +19,4 @@ services:
       - REDIS_HOSTS=local:cache:6379  # REDIS_HOSTS=[닉네임] : [컨테이너호칭(호스트이름)] : [포트] : [DB번호 기본0] : [비밀번호]
     ports:
       - "8081:8081"
+

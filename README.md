@@ -84,7 +84,8 @@ mission1/
 | 컨테이너 실습 | `hello-world`, `ubuntu` 실행 | [6.2 컨테이너 실습](#62-컨테이너-실행-실습) |
 | 커스텀 이미지 | Dockerfile 빌드 및 접속 | [7. 커스텀 이미지 제작](#7-커스텀-이미지-제작) |
 | 볼륨 영속성 | 컨테이너 삭제 후 데이터 확인 | [8. Docker 볼륨 및 데이터 영속성](#8-Docker-볼륨-및-데이터-영속성)  |
-| Git 설정 | `git config --list` 확인 | [9. Git 및 GitHub 연동 ](#9-Git-및-GitHub-연동) |
+| Docker Comopse | yaml 파일로 멀티컨테이너를 하나의 인프라로 정의 후 ping 테스트로 통신 확인  | [9. Docker Compose 및 인프라 구성](#9-추가-심화-학습--docker-compose-및-인프라-구성) |
+| Git 설정 | `git config --list` 확인 | [10. Git 및 GitHub 연동 ](#9-Git-및-GitHub-연동) |
 
 
 -------
@@ -427,8 +428,49 @@ docker run -it --name no-v-test alpine sh
 - **출력결과** 
 ![같은 볼륨을 다른 컨테이너에 연결시킨후 띄운 모습](./images/check-the-durability-of-volume.png)
 
-## 9. Git 및 GitHub 연동 
-### 9.1. git global 등록
+---
+## 9. 추가 심화 학습 : Docker Compose 및 인프라 구성 
+### 9.1. 개요
+단일 컨테이너 빌드를 넘어, 'Docker Compose'를 활용하여 여러 컨테이너(Nginx, Redis, Redis-GUI)를 하나의 인프라로 정의하고 관리하는 IaC(Infrastructure as Code) 실습을 진행.
+ 
+> [!NOTE]
+> - 진행방식 : (이미지 생성 혹은 받아오기 완료 상태 가정) yaml 파일 작성 => docker-compose up -d 로 띄운후  => docker ps 로 확인 => curl -I 확인, 브라우저로 확인 =>  exec로 들어가서 ping테스트
+
+- yaml 파일 작성
+![yaml 파일 작성](./images/docker-compose-old-yaml-the-right-one.png)
+
+- 멀티컨테이너 동작
+
+
+```bash
+    $ docker-compose -f docker-compose-old.yml up -d
+    $ docker-compose ps
+    $ curl -I localhost:8888
+    $ curl -I localhost:8081
+```
+- 결과
+![8088 웹](./images/localhot-8888-custom-image-nginx-container.png)
+![8081 웹](./images/redis-cli-localhost-8081.png)
+![curl 응답 (8888 & 8081)](./images/docker-compose-curl-8888-8081.png)
+
+
+
+### 9.2. 주요 아키텍쳐 및 학습 내용
+- 환경 변수 보안(.env) : 민감한 비밀번호는 `.env` 파일로 분리하고, `.gitignore`에 등록하여 깃허브 보안 유지.
+- 도커 네트워크 (Bridge & Ingress) : 외부 요청이 들어올때 (Ingress) 포트 포워딩을 통해 내부 컨테이너로 안전하게 연결되는 구조 이해. 
+- 포트 쪼개기 : 하나의 서버 컴퓨터 안에서 여러 Nginx를 독립된 포트로 띄워 서비스를 격리하는 실무 아키텍쳐 학습
+
+- .env 설정
+![.env설정](./images/up-docker-compose-env.png)
+
+- exec ping테스트
+![curl 응답 (8888 & 8081)](./images/up-docker-compose-redis-cli.png)
+
+
+--- 
+
+## 10. Git 및 GitHub 연동 
+### 10.1. git global 등록
 
 
 ```bash
@@ -445,7 +487,7 @@ $ git config --list
 - **출력결과** 
 ![글로벌 유저 등록](./images/up-git-global.png)
 
-### 9.2. SSH 키 생성
+### 10.2. SSH 키 생성
 - 방법 :  키생성 -> 키 읽어서 복사 -> 깃헙에 등록 (authentic Key) -> 터미널에서 확인 
 
     ```bash
@@ -459,7 +501,7 @@ $ git config --list
 
 ![SSH 키 생성 및 등록](./images/gen-SSH.png)
 
-## 10. 트러블슈팅 (Troubleshooting)
+## 11. 트러블슈팅 (Troubleshooting)
 ### Case 1: 스크린샷 관리 자동화
 - **문제**:  `README.md` 작성과정에서 스크린샷 첨부를 해야하는데 매번 스크린샷 저장후 이름 바꾸어 수동 이동시키는 것에 불편을 느낌
 - **원인**: 특정 경로의 최신 스크린샷 파일을 현재 프로젝트의 `/images` 폴더로 옮기고 이름을 변경해주는 간단한 쉘 스크립트(또는 Alias)를 AI와 함께 `mvcap`을 작성하여 활용함.
@@ -482,6 +524,37 @@ $ cat ~/.zshrc
 - **원인**: GitHub 마크다운의 앵커 규칙(공백은 하이픈`-`으로 대체, 대문자는 소문자로 변환)을 준수하지 않았고, 링크 주소 내에 공백이 포함되어 있었음.
 - **해결**: 링크 주소 내의 하이픈으로 대체하여 해결함.
 
+### Case 3: Redis WRONGPASS 에러 (비밀 번호 불일치)
+- **문제** :  `redis-cli`에서 `auth`명령어를 쳤는데 비밀번호 틀렸다고 나옴
+- **원인** : `yml`파일에서 변수를 넣을때 `$` 기호 누락. (`-requirepass "{MY_REDIS_PW}"`) => 도커가 `.env`를 읽지 않고 비밀번호 문자열그대로 `{MY_REDIS_PW}`로 설정해버림
+- **해결** : `${MY_REDIS_PW}`처럼 **달러(`$`)기호**를 반드시 붙여준다. 
+
+![변수 처리 $ 누락](./images/up-docker-compose-omit-dolloar-sign.png)
+
+### Case 4: Redis 비밀밀번호 미확인 (프리패스)
+- **문제** : `redis-cli`에 들어갔는데 `auth` 없이 `ping`을 날려도 `pong`이 뜸 
+- **원인** : `.env` 파일의 위치가 틀림 (yaml 파일과 다른 폴더에 있었음) => 컴포즈가 `.env`를 못찾아서 변수를 빈칸(`""`)으로 처리함. 즉, "비밀번호 없음"으로 셋팅되어 문이 활짝 열림
+- **해결** : `docker-compose.yml`과 `.env`파일은 **무조건 같은 폴더**에 두어야함. (확인 명령어 - `docker-compose config` 로 변수 잘 들어갔나 확인 )
 
 
+![docker-compose config 로 확인](./images/docker-compose-password-chekced-by-using-config-command-works.png)
+
+
+### Case 5: Already in use by container..
+- **문제** : 설정 오타를 수정하고 다시 올렸더니, 이름이 이미 사용 중이라며 컨테이너 생성 거부. 
+- **원인** : 과거에 수동으로 띄웠거나 에러로 꼬이면서, 컴포즈 관리망을 벗어난 동명이인 '좀비 컨테이너'가 남아 자리(이름)을 차지하고있음. (`docker-compose down`으로 해도 안지워짐)
+- **해결** : 강제 철거후 다시 컴포즈 실행
+
+
+```bash
+    # docker rm -f [좀비 컨테이너 이름 or ID] 혹은 
+    $ docker-compose down --remove-orphans # 고아 상태인 좀비컨테이너 삭제 후 다시 실행 
+```
+
+![이미할당된 포트1](./images/docker-compose-already-allocated.png)
+![이미할당된 포트2 - created](./images/docker-compose-already-allocated-created.png)
+![좀비 컨테이너 삭제후 다시 up명령어 실행](./images/remove-orphans.png)
+
+![localhost:8081](./images/local-host-8081.png)
+![localhost:8082](./images/local-host-8082.png)
 ---
