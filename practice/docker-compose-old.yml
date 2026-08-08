@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  web:                                  # 컨테이너끼리 부르는 호칭 (서비스 이름)
+    image : my_custom_nginx:v1
+    container_name : compose_web        # 터미널 (docker ps)에서 볼 때 쓰는 네임택 
+    ports:
+      - "8888:80"
+    
+  cache:
+    image: redis:alpine
+    container_name : compose_cache 
+    command : redis-server --requirepass "${MY_REDIS_PW}"    # 레디스 실행시 비밀번호(supersecret) 걸고 실행 하도록 명령
+
+  redis-gui:
+    image: rediscommander/redis-commander:latest
+    container_name : compose_redis_gui
+    environment:
+      - REDIS_HOSTS=local:cache:6379  # REDIS_HOSTS=[닉네임] : [컨테이너호칭(호스트이름)] : [포트] : [DB번호 기본0] : [비밀번호]
+    ports:
+      - "8081:8081"

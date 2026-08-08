@@ -1,0 +1,17 @@
+services:
+  # 1. 첫 번째 nginx (쇼핑몰이라고 가정) - Bridge(Ingress) 모드 
+  nginx-shop:
+    image: nginx:alpine
+    ports:
+      - "8081:80"
+  
+  # 2. 두 번째 Nginx (사내 관리용 가정) - Bridge(Ingress) 모드
+  nginx-admin:
+    image: nginx:alpine
+    ports:
+      - "8082:80"
+  
+  # 3. Nginx - Host 모드 (맥에서 실질적 접속은 어렵지만 설정법 연습)
+  nginx-fast:
+    image : nginx:alpine
+    network_mode: "host"  # host모드는 포트포워딩 안함 why? 직통 연결!
