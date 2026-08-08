@@ -437,7 +437,31 @@ docker run -it --name no-v-test alpine sh
 > - 진행방식 : (이미지 생성 혹은 받아오기 완료 상태 가정) yaml 파일 작성 => docker-compose up -d 로 띄운후  => docker ps 로 확인 => curl -I 확인, 브라우저로 확인 =>  exec로 들어가서 ping테스트
 
 - yaml 파일 작성
-![yaml 파일 작성](./images/docker-compose-old-yaml-the-right-one.png)
+
+```bash
+    version: '3.8'
+
+    services:
+    web:                                  # 컨테이너끼리 부르는 호칭 (서비스 이름)
+        image : my_custom_nginx:v1
+        container_name : compose_web        # 터미널 (docker ps)에서 볼 때 쓰는 네임택 
+        ports:
+            - "8888:80"
+        
+    cache:
+        image: redis:alpine
+        container_name : compose_cache 
+        command : redis-server --requirepass "${MY_REDIS_PW}"    # 레디스 실행시 비밀번호(pwd) 걸고 실행 하도록 명령
+
+    redis-gui:
+        image: rediscommander/redis-commander:latest
+        container_name : compose_redis_gui
+        environment:
+            - REDIS_HOSTS=local:cache:6379  # REDIS_HOSTS=[닉네임] : [컨테이너호칭(호스트이름)] : [포트] : [DB번호 기본0] : [비밀번호]
+        ports:
+            - "8081:8081"
+
+```
 
 - 멀티컨테이너 동작
 
@@ -555,6 +579,6 @@ $ cat ~/.zshrc
 ![이미할당된 포트2 - created](./images/docker-compose-already-allocated-created.png)
 ![좀비 컨테이너 삭제후 다시 up명령어 실행](./images/remove-orphans.png)
 
-![localhost:8081](./images/local-host-8081.png)
-![localhost:8082](./images/local-host-8082.png)
+![8081 작동 확인](./images/localhost-8081.png)
+![8082 작동 확인](./images/localhost-8082.png)
 ---
